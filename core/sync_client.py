@@ -2,23 +2,29 @@ import requests
 import time
 import json
 
+def single_request(url):
+    start_time = time.time()
+    response = requests.get(url)
+    resp = json.loads(response.text)
+    end_time = time.time()
+    return resp['delay'], end_time - start_time
+
 def sync_client(n, url='http://0.0.0.0:5000/delay'):
-    num_of_times = []
-    resp = []
+    result = {}
+    start = time.time()
     for _ in range(n):
-        start = time.time()
-        raw_resp = requests.get(url)
-        resp.append(json.loads(raw_resp.text)['delay'])
-        end = time.time()
-        num_of_times.append(end - start)
-    return resp, num_of_times
+        delay, req_time = single_request(url)
+        result[req_time] = delay
+
+    return result, time.time() - start
 
 if __name__ == '__main__':
     n = 20
-    resp, times = sync_client(n)
-    print("=" * 30)
-    print(resp)
-    print(times)
-    res = {"SyncResp": resp, "SyncRes": times}
+    server_delay_map, total = sync_client(n)
+
+    output = {
+        "SingleRequestTime": total,
+        "ServerDelay": server_delay_map
+    }
     with open("../results/result_sync.json", "w") as f:
-        json.dump(res, f)
+        json.dump(output, f)

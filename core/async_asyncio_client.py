@@ -1,19 +1,33 @@
-import asyncio, aiohttp, time
+import asyncio
+import aiohttp
+import time
+import json
 
 async def single_request(session, url):
-    t0 = time.time()
+    start = time.time()
     async with session.get(url) as resp:
         data = await resp.json()
-    return data['delay'], time.time() - t0
+    duration = time.time() - start
+    return duration, data['delay']
 
 async def async_client(n=20, url='http://0.0.0.0:5000/delay'):
-    t_start = time.time()
+    result = {}
+    start_all = time.time()
     async with aiohttp.ClientSession() as session:
         tasks = [single_request(session, url) for _ in range(n)]
-        results = await asyncio.gather(*tasks)
-    delays, durations = zip(*results)
-    return delays, durations, time.time() - t_start
+        for duration, delay in await asyncio.gather(*tasks):
+            result[duration] = delay
+    total_time = time.time() - start_all
+
+    return result, total_time
 
 if __name__ == '__main__':
-    delays, durations, total = asyncio.run(async_client())
-    print(delays, durations, total)
+    n = 20
+    server_delay_map, total = asyncio.run(async_client(n))
+
+    output = {
+        "SingleRequestTime": total,
+        "ServerDelay": server_delay_map
+    }
+    with open("../results/result_async_asyncio.json", "w") as f:
+        json.dump(output, f)
