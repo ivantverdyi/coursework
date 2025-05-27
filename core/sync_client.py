@@ -17,8 +17,8 @@ if __name__ == '__main__':
     n = 20
     resp, times = sync_client(n)
     print("=" * 30)
-    print(times)
     print(resp)
+    print(times)
     res = {"SyncResp": resp, "SyncRes": times}
     with open("../results/result_sync.json", "w") as f:
         json.dump(res, f)

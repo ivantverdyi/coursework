@@ -30,8 +30,8 @@ if __name__ == '__main__':
     n = 20
     res, times, async_time = async_client(n=n, url='http://0.0.0.0:5000/delay')
     print("=" * 30)
-    print(times)
     print(res)
+    print(times)
     print(async_time)
 
     result = {"SyncResp": res, "SyncRes": times}
