@@ -23,7 +23,7 @@ if __name__ == '__main__':
     server_delay_map, total = sync_client(n)
 
     output = {
-        "SingleRequestTime": total,
+        "AllRequestsTime": total,
         "ServerDelay": server_delay_map
     }
     with open("../results/result_sync.json", "w") as f:
