@@ -4,7 +4,7 @@ import json
 from concurrent.futures import ThreadPoolExecutor
 from sync_client import single_request
 
-def async_client(n=100, url='http://0.0.0.0:5000/delay', max_workers=4):
+def async_client(n=20, url='http://0.0.0.0:5000/delay', max_workers=4):
     result = {}
     start_all = time.time()
     with ThreadPoolExecutor(max_workers=max_workers) as executor:

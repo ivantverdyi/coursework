@@ -10,7 +10,7 @@ async def single_request(session, url):
     duration = time.time() - start
     return duration, data['delay']
 
-async def async_client(n=100, url='http://0.0.0.0:5000/delay'):
+async def async_client(n=20, url='http://0.0.0.0:5000/delay'):
     result = {}
     start_all = time.time()
     async with aiohttp.ClientSession() as session:

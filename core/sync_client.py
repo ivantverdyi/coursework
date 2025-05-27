@@ -9,7 +9,7 @@ def single_request(url):
     end_time = time.time()
     return resp['delay'], end_time - start_time
 
-def sync_client(n, url='http://0.0.0.0:5000/delay'):
+def sync_client(n=20, url='http://0.0.0.0:5000/delay'):
     result = {}
     start = time.time()
     for _ in range(n):
