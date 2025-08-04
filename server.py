@@ -1,6 +1,6 @@
 import time
 import random
-from flask import Flask, Response
+from flask import Flask, jsonify
 import json
 
 app = Flask(__name__)
@@ -9,7 +9,7 @@ app = Flask(__name__)
 def serv_delay():
     delay = random.uniform(0.1, 1)
     time.sleep(delay)
-    return Response(json.dumps({'delay': delay}), content_type='application/json')
+    return jsonify(delay=delay)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='127.0.0.1', port=5000, threaded=True)

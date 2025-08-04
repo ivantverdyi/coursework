@@ -1,33 +1,51 @@
+import os
+import json
+import time
 import asyncio
 import aiohttp
-import time
-import json
 
 async def single_request(session, url):
-    start = time.time()
-    async with session.get(url) as resp:
-        data = await resp.json()
-    duration = time.time() - start
-    return duration, data['delay']
+    try:
+        start = time.perf_counter()
+        async with session.get(url) as resp:
+            data = await resp.json()
+        elapsed = time.perf_counter() - start
+        return data['delay'], elapsed
+    except Exception as e:
+        print(f"Request failed: {e}")
+        return None, None
 
-async def async_client(n=20, url='http://0.0.0.0:5000/delay'):
-    result = {}
-    start_all = time.time()
+async def async_asyncio_client(n=20, url='http://127.0.0.1:5000/delay'):
+    output_dir = os.path.join(os.getcwd(), 'results')
+    os.makedirs(output_dir, exist_ok=True)
+
+    stats = {
+        'individual_times': [],
+        'server_delays': [],
+        'count_success': 0,
+        'count_failed': 0,
+        'total_time': 0.0
+    }
+
     async with aiohttp.ClientSession() as session:
+        start_all = time.perf_counter()
         tasks = [single_request(session, url) for _ in range(n)]
-        for duration, delay in await asyncio.gather(*tasks):
-            result[duration] = delay
-    total_time = time.time() - start_all
+        results = await asyncio.gather(*tasks)
+        for i, (delay, rtt) in enumerate(results, start=1):
+            if delay is None or rtt is None:
+                stats['count_failed'] += 1
+            else:
+                stats['count_success'] += 1
+                stats['server_delays'].append(delay)
+                stats['individual_times'].append(rtt)
+                print(f"{i}: delay = {delay:.3f}s, round trip = {rtt:.3f}s")
+        stats['total_time'] = time.perf_counter() - start_all
 
-    return result, total_time
+    return stats
 
 if __name__ == '__main__':
     n = 20
-    server_delay_map, total = asyncio.run(async_client(n))
+    statistics = asyncio.run(async_asyncio_client(n))
 
-    output = {
-        "AllRequestsTime": total,
-        "ServerDelay": server_delay_map
-    }
     with open("../results/result_async_asyncio.json", "w") as f:
-        json.dump(output, f)
+        json.dump(statistics, f)
