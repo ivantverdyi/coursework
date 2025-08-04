@@ -3,10 +3,10 @@ import requests
 import time
 import json
 
-def single_request(session, url):
+def single_request(url):
     try:
         start_time = time.perf_counter()
-        response = session.get(url)
+        response = requests.get(url)
         data = response.json()
         end_time = time.perf_counter()
 
@@ -28,11 +28,10 @@ def sync_client(n=20, url='http://127.0.0.1:5000/delay'):
         'total_time': 0.0,
     }
 
-    session = requests.Session()
     total_start = time.perf_counter()
 
     for i in range(1, n + 1):
-        delay, rtt = single_request(session, url)
+        delay, rtt = single_request(url)
         if delay is None or rtt is None:
             stats['count_failed'] += 1
             continue

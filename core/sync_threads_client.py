@@ -1,5 +1,4 @@
 import os
-
 import requests
 import time
 import json
@@ -18,11 +17,10 @@ def sync_threads_client(n=20, url='http://127.0.0.1:5000/delay', max_workers=4):
         'total_time': 0.0
     }
 
-    session = requests.Session()
     start_all = time.perf_counter()
 
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        futures = [executor.submit(single_request, session, url) for _ in range(n)]
+        futures = [executor.submit(single_request, url) for _ in range(n)]
         for i, fut in enumerate(futures, start=1):
             delay, rtt = fut.result()
             if delay is None or rtt is None:
