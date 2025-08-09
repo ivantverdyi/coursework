@@ -1,7 +1,6 @@
 import time
 import random
 from flask import Flask, jsonify
-import json
 
 app = Flask(__name__)
 

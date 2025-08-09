@@ -15,9 +15,9 @@ def single_request(url):
         print(f"Request failed: {e}")
         return None, None
 
-def sync_client(n=20, url='http://127.0.0.1:5000/delay'):
+def sync_client(n=50, url='http://127.0.0.1:5000/delay'):
 
-    output_dir = os.path.join(os.getcwd(), 'results')
+    output_dir = os.path.join(os.getcwd(), '../results')
     os.makedirs(output_dir, exist_ok=True)
 
     stats = {
@@ -47,7 +47,7 @@ def sync_client(n=20, url='http://127.0.0.1:5000/delay'):
     return stats
 
 if __name__ == '__main__':
-    n = 20
+    n = 100
     statistics = sync_client(n)
 
     with open("../results/result_sync.json", "w") as f:

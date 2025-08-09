@@ -15,8 +15,8 @@ async def single_request(session, url):
         print(f"Request failed: {e}")
         return None, None
 
-async def async_asyncio_client(n=20, url='http://127.0.0.1:5000/delay'):
-    output_dir = os.path.join(os.getcwd(), 'results')
+async def async_asyncio_client(n=50, url='http://127.0.0.1:5000/delay'):
+    output_dir = os.path.join(os.getcwd(), '../results')
     os.makedirs(output_dir, exist_ok=True)
 
     stats = {
@@ -44,7 +44,7 @@ async def async_asyncio_client(n=20, url='http://127.0.0.1:5000/delay'):
     return stats
 
 if __name__ == '__main__':
-    n = 20
+    n = 100
     statistics = asyncio.run(async_asyncio_client(n))
 
     with open("../results/result_async_asyncio.json", "w") as f:

@@ -1,12 +1,11 @@
 import os
-import requests
 import time
 import json
 from concurrent.futures import ThreadPoolExecutor
 from sync_client import single_request
 
-def sync_threads_client(n=20, url='http://127.0.0.1:5000/delay', max_workers=4):
-    output_dir = os.path.join(os.getcwd(), 'results')
+def sync_threads_client(n=50, url='http://127.0.0.1:5000/delay', max_workers=4):
+    output_dir = os.path.join(os.getcwd(), '../results')
     os.makedirs(output_dir, exist_ok=True)
 
     stats = {
@@ -35,7 +34,8 @@ def sync_threads_client(n=20, url='http://127.0.0.1:5000/delay', max_workers=4):
     return stats
 
 if __name__ == '__main__':
-    n = 20
+    n = 100
+
     statistics = sync_threads_client(n=n)
 
     with open("../results/result_sync_threads.json", "w") as f:
